@@ -54,7 +54,7 @@ Route::post('/register', function (Request $request) {
         'password' => 'required|min:6|confirmed',
     ]);
 
-     $user = User::create([  // ← Sekarang User dikenali
+     $user = User::create([  // menandakan user
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
@@ -70,6 +70,7 @@ Route::post('/logout', function () {
     return redirect('/');
 });
 
+//route tabel tempat
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/tempat', [TempatController::class, 'index'])->name('admin.tempat.index');
     Route::get('/admin/tempat/create', [TempatController::class, 'create'])->name('admin.tempat.create');
@@ -79,7 +80,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/tempat/{id}', [TempatController::class, 'destroy'])->name('admin.tempat.delete');
 });
 
-// ADMIN LIHAT PEMINJAMAN
+// admin lihat peminjaman
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/peminjaman', [PeminjamanController::class, 'adminIndex'])->name('admin.peminjaman.index');
     Route::get('/admin/peminjaman/{peminjaman}', [PeminjamanController::class, 'show'])->name('admin.peminjaman.show');
@@ -92,15 +93,15 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     })->name('dashboard');
 });
 
-// USER FORM PEMINJAMAN
+// form peminjaman user
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/peminjaman', [PeminjamanController::class, 'store'])->name('peminjaman.store');
 });
 
-// USER kirim pesan dari dashboard form
+// user kirim pesan dari dashboard form
 Route::middleware(['auth', 'role:user'])->post('/pesan', [PesanController::class, 'store'])->name('pesan.store');
 
-// ADMIN pesan (match peminjaman style)
+// admin pesan 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/pesan', [PesanController::class, 'adminIndex'])->name('admin.pesan.index');
     Route::delete('/admin/pesan/{pesan}', [PesanController::class, 'destroy'])->name('admin.pesan.destroy');
@@ -108,12 +109,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::delete('/admin/pesan/{pesan}', [PesanController::class, 'destroy'])->name('admin.pesan.destroy');
 
 
-
+//admin tabel user
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
+//route profil tampilan dan edit
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
